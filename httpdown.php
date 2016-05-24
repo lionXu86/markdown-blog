@@ -118,14 +118,4 @@ class HttpDown
     }
 }
 
-//设置下载地址
-$url = "https://github.com/docker/toolbox/releases/download/v1.11.1/DockerToolbox-1.11.1.exe";
-//$url = "http://113.215.11.151/dlied1.qq.com/lol/dltools/LOL_V3.1.8.3_FULL_TDL_signed.exe?mkey=570c465793a2742e&f=1b0c&p=.exe";
-//设置下载的文件存储路径
-$dest = "./DockerToolbox-1.11.1.exe";
-
-$downer = new HttpDown($url, $dest);
-$downer->download();
-
-
 ?>
