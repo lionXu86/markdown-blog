@@ -1,7 +1,7 @@
 <?php
 /**
- * »ùÓÚhttpµÄ¶ÏµãÐø´«ÏÂÔØÆ÷
- * author£ºxqy
+ * åŸºäºŽhttpçš„æ–­ç‚¹ç»­ä¼ ä¸‹è½½å™¨
+ * authorï¼šxqy
  */
 class HttpDown
 {
@@ -15,11 +15,11 @@ class HttpDown
     function __construct($file_url, $dest_file)
     {
         $this->file_url = $file_url;
-        $this->dest = $dest_file;
+        $this->dest     = $dest_file;
     }
 
     /*
-     * Ì½²âÎÄ¼þµÄÕæÊµÏÂÔØµØÖ·
+     * æŽ¢æµ‹æ–‡ä»¶çš„çœŸå®žä¸‹è½½åœ°å€
      *
      */
     function detect($url)
@@ -36,18 +36,15 @@ class HttpDown
         curl_close($curl);
 
         $http_code = (int)$header["http_code"];
-        if($http_code == 302)
-        {
+        if ($http_code == 302) {
             $redirect_url = $header["redirect_url"];
             $this->detect($redirect_url);
-        }
-        else if($http_code == 200)
-        {
+        } else if($http_code == 200) {
             $this->file_down_url = $header["url"];
-            //»ñÈ¡ÎÄ¼þµÄ×Ü´óÐ¡
+            //èŽ·å–æ–‡ä»¶çš„æ€»å¤§å°
             $this->total_file_size = $header["download_content_length"];
-            if(empty($dest_file))
-            {
+            
+            if (empty($dest_file)) {
                 $file_name = explode("/", $this->file_down_url);
                 $file_name = array_pop($file_name);
                 $str_pos = strpos($file_name,"?");
@@ -55,15 +52,13 @@ class HttpDown
                 $this->dest = "./test_".$file_name;
             }
             return;
-        }
-        else
-        {
+        } else {
             echo PHP_EOL."file detect error";
         }
     }
 
     /**
-     * ÏÂÔØ
+     * ä¸‹è½½
      */
     function download()
     {
@@ -77,10 +72,9 @@ class HttpDown
         echo PHP_EOL.'download start:'.((int)($begin * 100 / $this->total_file_size))."%";
 
         $buffer = '';
-        while($begin < $this->total_file_size)
-        {
+        while ($begin < $this->total_file_size) {
             $end = $begin + $this->block;
-            if($end >= $this->total_file_size)
+            if ($end >= $this->total_file_size)
                 $end = $this->total_file_size;
 
             $curl = curl_init();
@@ -91,17 +85,17 @@ class HttpDown
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($curl, CURLINFO_HEADER_OUT, true);
 
-            //ÉèÖÃhttpÍ·
+            //è®¾ç½®httpå¤´
             //$request_header = array('Accept-Ranges:bytes',"content-disposition:attachment; filename=".$url);
             //curl_setopt($curl, CURLOPT_HTTPHEADER, $request_header);
 
-            $buffer = curl_exec($curl);
-            $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            $buffer     = curl_exec($curl);
+            $httpCode   = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             curl_close($curl);
 
             if((int)$httpCode != 206)die("download file error");
 
-            //½«ÏÂÔØµÄÎÄ¼þÐ´Èë±¾µØ
+            //å°†ä¸‹è½½çš„æ–‡ä»¶å†™å…¥æœ¬åœ°
             $file = fopen($this->dest, 'a');
             if(!$file)die("open file error");
             fwrite($file, $buffer);
@@ -117,5 +111,3 @@ class HttpDown
         echo PHP_EOL.'download complete';
     }
 }
-
-?>
