@@ -45,10 +45,10 @@ class HttpDown
             $this->total_file_size = $header["download_content_length"];
             
             if (empty($dest_file)) {
-                $file_name = explode("/", $this->file_down_url);
-                $file_name = array_pop($file_name);
-                $str_pos = strpos($file_name,"?");
-                $file_name = substr($file_name, 0, $str_pos);
+                $file_name  = explode("/", $this->file_down_url);
+                $file_name  = array_pop($file_name);
+                $str_pos    = strpos($file_name,"?");
+                $file_name  = substr($file_name, 0, $str_pos);
                 $this->dest = "./test_".$file_name;
             }
             return;
