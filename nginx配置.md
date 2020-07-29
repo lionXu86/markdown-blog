@@ -1,5 +1,55 @@
+### php配置
+```
+server {
+    listen       80 default_server;
+    listen       [::]:80 default_server;
+    server_name  _;
+    root         /usr/share/nginx/html;
+
+    # Load configuration files for the default server block.
+    include /etc/nginx/default.d/*.conf;
+
+    location ~ \.php$ {  
+        fastcgi_pass 127.0.0.1:9000; // php-fpm进程地址，也可配置远程地址，$document_root这是改成相应地址，一般不这么干
+        fastcgi_index index.php;  
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;  
+        include fastcgi_params;  
+    }
+    
+    location / {
+        # 专门针对tp的rewrite模式
+        if (!-e $request_filename) {
+            rewrite  ^(.*)$  /index.php?s=$1  last;
+            break;
+        }
+    }
+
+    error_page 404 /404.html;
+        location = /40x.html {
+    }
+
+    error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+    }
+}
+```
+
+#### 关于location模块中的rewirte指令
+##### break
+url重写后，直接使用当前资源，不再执行location里余下的语句，完成本次请求，地址栏url不变
+
+##### last
+url重写后，马上发起一个新的请求，再次进入server块，重试location匹配，超过10次匹配不到报500错误，地址栏url不变
+
+##### redirect 
+返回302临时重定向，地址栏显示重定向后的url，爬虫不会更新url（因为是临时）
+
+###### permanent 
+返回301永久重定向, 地址栏显示重定向后的url，爬虫更新url
+
+
 ### 反向代理优化
-如果你用 nginx 作为代理服务器，也要减少磁盘 io 的读取。
+如果用 nginx 作为代理服务器，也要减少磁盘 io 的读取。
 ```
 proxy_buffering on;
 proxy_buffer_size 4k;
@@ -10,6 +60,7 @@ proxy_set_header Host $http_host;
 proxy_set_header X-REAL-IP $remote_addr;
 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 ```
+
 
 ### 配置优化
 ```
@@ -123,8 +174,6 @@ http {
             log_not_found off;
         }
         
-        
-
         # svg, fonts
         location ~* \.(?:svgz?|ttf|ttc|otf|eot|woff2?)$ {
             # 强缓存，时间为一年，浏览器和 cdn 中间件可以缓存
@@ -135,57 +184,6 @@ http {
             log_not_found off;
         }
     }
-
 }
 
 ```
-
-
-#### php配置
-```
-server {
-    listen       80 default_server;
-    listen       [::]:80 default_server;
-    server_name  _;
-    root         /usr/share/nginx/html;
-
-    # Load configuration files for the default server block.
-    include /etc/nginx/default.d/*.conf;
-
-    location ~ \.php$ {  
-        fastcgi_pass 127.0.0.1:9000; // php-fpm进程地址，也可配置远程地址，$document_root这是改成相应地址，一般不这么干
-        fastcgi_index index.php;  
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;  
-        include fastcgi_params;  
-    }
-    
-    location / {
-        # 专门针对tp的rewrite模式
-        if (!-e $request_filename) {
-            rewrite  ^(.*)$  /index.php?s=$1  last;
-            break;
-        }
-    }
-
-    error_page 404 /404.html;
-        location = /40x.html {
-    }
-
-    error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-    }
-}
-```
-
-#### 关于location模块中的rewirte指令
-##### break
-url重写后，直接使用当前资源，不再执行location里余下的语句，完成本次请求，地址栏url不变
-
-##### last
-url重写后，马上发起一个新的请求，再次进入server块，重试location匹配，超过10次匹配不到报500错误，地址栏url不变
-
-##### redirect 
-返回302临时重定向，地址栏显示重定向后的url，爬虫不会更新url（因为是临时）
-
-###### permanent 
-返回301永久重定向, 地址栏显示重定向后的url，爬虫更新url
