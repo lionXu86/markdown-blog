@@ -176,3 +176,16 @@ server {
     }
 }
 ```
+
+#### 关于location模块中的rewirte指令
+##### break
+url重写后，直接使用当前资源，不再执行location里余下的语句，完成本次请求，地址栏url不变
+
+##### last
+url重写后，马上发起一个新的请求，再次进入server块，重试location匹配，超过10次匹配不到报500错误，地址栏url不变
+
+##### redirect 
+返回302临时重定向，地址栏显示重定向后的url，爬虫不会更新url（因为是临时）
+
+###### permanent 
+返回301永久重定向, 地址栏显示重定向后的url，爬虫更新url
