@@ -107,8 +107,7 @@ http {
     add_header Referrer-Policy "no-referrer-when-downgrade" always;
     add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
-
-
+    
     server {
         listen 80 backlog=262144;
 
@@ -123,6 +122,8 @@ http {
             # 禁用文件未找到的错误到日志中去
             log_not_found off;
         }
+        
+        
 
         # svg, fonts
         location ~* \.(?:svgz?|ttf|ttc|otf|eot|woff2?)$ {
@@ -137,4 +138,40 @@ http {
 
 }
 
+```
+
+php配置
+```
+server {
+    listen       80 default_server;
+    listen       [::]:80 default_server;
+    server_name  _;
+    root         /usr/share/nginx/html;
+
+    # Load configuration files for the default server block.
+    include /etc/nginx/default.d/*.conf;
+
+    location ~ \.php$ {  
+        fastcgi_pass 127.0.0.1:9000; // php-fpm进程地址，也可配置远程地址，$document_root这是改成相应地址，一般不这么干
+        fastcgi_index index.php;  
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;  
+        include fastcgi_params;  
+    }
+    
+    location / {
+        # 专门针对tp的rewrite模式
+        if (!-e $request_filename) {
+            rewrite  ^(.*)$  /index.php?s=$1  last;
+            break;
+        }
+    }
+
+    error_page 404 /404.html;
+        location = /40x.html {
+    }
+
+    error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+    }
+}
 ```
