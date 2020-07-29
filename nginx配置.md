@@ -48,19 +48,6 @@ url重写后，马上发起一个新的请求，再次进入server块，重试lo
 返回301永久重定向, 地址栏显示重定向后的url，爬虫更新url
 
 
-### 反向代理优化
-如果用 nginx 作为代理服务器，也要减少磁盘 io 的读取。
-```
-proxy_buffering on;
-proxy_buffer_size 4k;
-proxy_buffers 16 64k;
-proxy_busy_buffers_size 128k;
-proxy_temp_file_write_size 128k;
-proxy_set_header Host $http_host;
-proxy_set_header X-REAL-IP $remote_addr;
-proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-```
-
 
 ### 配置优化
 ```
