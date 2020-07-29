@@ -140,7 +140,8 @@ http {
 
 ```
 
-php配置
+
+#### php配置
 ```
 server {
     listen       80 default_server;
