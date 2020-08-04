@@ -195,7 +195,23 @@ thread_cache_size=64
 根据调查发现以上服务器线程缓存thread_cache_size没有进行设置，或者设置过小,这个值表示可以重新利用保存在缓存中线程的数量,当断开连接时如果缓存中还有空间,那么客户端的线程将被放到缓存中,如果线程重新被请求，那么请求将从缓存中读取,如果缓存中是空的或者是新的请求，那么这个线程将被重新创建,如果有很多新的线程，增加这个值可以改善系统性能.通过比较 Connections 和 Threads_created 状态的变量，可以看到这个变量的作用
 
 
+## 汇总
 
+```
+back_log=500
+max_connections=3000
+max_user_connections=800
+thread_concurrency=64
+key_buffer_size=400M
+innodb_buffer_pool_size=1024M(1G)
+innodb_additional_mem_pool_size=20M
+innodb_log_buffer_size=20M
+query_cache_size=40M
+read_buffer_size=4M
+read_rnd_buffer_size=8M
+tmp_table_size=16M
+thread_cache_size=64
+```
 
 
 
