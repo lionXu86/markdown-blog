@@ -210,7 +210,3 @@ thread_cache_size=64
 
 5、检索值的数据类型与索引字段不同，虽然MySQL能够进行数据类型转换，但却不会使用索引，从而导致InnoDB使用表锁。通过用explain检查两条SQL的执行计划，我们可以清楚地看到了这一点。
 
-设置最大连接数
-SHOW VARIABLES LIKE "max_connections"; 
-
-SET GLOBAL max_connections=10000; 
