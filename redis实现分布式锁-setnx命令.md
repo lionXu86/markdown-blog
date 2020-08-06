@@ -1,4 +1,4 @@
-## redis的setnx实现分布式锁，乐观锁机制
+## redis的setnx命令实现分布式锁，乐观锁机制
 
 基于hyperf+redis实现了分布式锁的机制，也是乐观锁机制，和使用redis的watch命令不同，这次使用的是setnx命令。
 
@@ -132,7 +132,7 @@ class MyProcess extends AbstractProcess
 
 乐观锁的缺点就是要重复试错，不过相比悲观锁的阻塞等待导致的超时异常已经算不少优化了。
 
-精简代码：
+精简代码以供食用：
 
 ```
 $redis = $container->get(Redis::class);
