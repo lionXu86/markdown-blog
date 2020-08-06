@@ -1,6 +1,6 @@
 ## redis的setnx实现分布式锁，乐观锁机制
 
-基于hyperf+redis实现了分布式锁的机制，也是乐观锁机制，和使用redis的watch命令不同，这次使用的是setnx命令
+基于hyperf+redis实现了分布式锁的机制，也是乐观锁机制，和使用redis的watch命令不同，这次使用的是setnx命令。
 
 ```php
 <?php
@@ -30,7 +30,7 @@ class MyProcess extends AbstractProcess
                 $lock = 0;
                 $lockout_time = time();
 
-                while ($num < 6) {
+                while ($num < 3) {
                     sleep(1);
 
                     $lockout_time = time() + 5;
@@ -126,4 +126,42 @@ class MyProcess extends AbstractProcess
 
 协程全部退出
 
+```
+
+## 总结
+
+乐观锁的缺点就是要重复试错，不过相比悲观锁的阻塞等待导致的超时异常已经算不少优化了。
+
+精简代码：
+
+```
+$redis = $container->get(Redis::class);
+
+$lock = 0;
+$lockout_time = time() + 5;
+
+while (true) {
+    $lockout_time = time() + 5;
+    $lock = $redis->setnx("lock.foo", $lockout_time);
+
+    if ($lock == 0) {
+        $expire_time = $redis->get("lock.foo");
+
+        if ($expire_time < time() && $redis->getset("lock.foo", $lockout_time) < time() ) {
+            $lock = 1;
+        } else {
+            $lock = 0;
+            continue;
+        }
+    }
+
+    //业务逻辑操作
+    do();
+
+    if ($lockout_time  >= time()) {
+        $redis->del("lock.foo");
+
+        $lock = 0;
+    }
+}
 ```
