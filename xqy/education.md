@@ -9,7 +9,9 @@
 
 * 在线教育的空间在哪里？我个人认为在职业教育（个人成长、职业规划、技能技巧类）、在于国家教育体系所不能提供的服务之外的部分。尤其是要求知识不必那么精深、无需讨论研究的了，一旦需要答疑解惑，线上教育就短板毕现。
 
-* https://baike.baidu.com/tashuo/browse/content?id=66051d88620e5cd29adc9ada&lemmaId=3444781&fromLemmaModule=pcBottom
+* 竞争手段 https://baike.baidu.com/tashuo/browse/content?id=66051d88620e5cd29adc9ada&lemmaId=3444781&fromLemmaModule=pcBottom
+
+* 行业未来发展 https://www.iyiou.com/p/85278.html
 
 #### 创办流程
 
